@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cripto/repositories/moeda_repository.dart';
+import 'package:intl/intl.dart';
+
+import '../models/moeda.dart';
 
 class MoedasPage extends StatelessWidget {
   const MoedasPage({Key? key}) : super(key: key);
@@ -7,7 +10,8 @@ class MoedasPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tabela = MoedaRepository.tabela;
-
+    List<Moeda> moedasSelecionadas =[];
+    NumberFormat real = NumberFormat.currency(locale: 'pt_BR',name: 'R\$');
     return Scaffold(
         appBar: AppBar(
           title: Text('Cripto Moedas'),
@@ -16,9 +20,29 @@ class MoedasPage extends StatelessWidget {
         body: ListView.separated(
             itemBuilder: (BuildContext conext,int moeda ){
               return ListTile(
-                leading: Image.asset(tabela[moeda].icone),
-                title: Text(tabela[moeda].nome),
-                trailing: Text(tabela[moeda].preco.toString()),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(12)),
+                ),
+                leading: SizedBox(
+                  child: Image.asset(tabela[moeda].icone),
+                  width: 40,
+                ),
+                title: Text(tabela[moeda].nome, style : TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                )),
+                trailing: Text(real.format(tabela[moeda].preco),
+                    style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w300,
+                )),
+                selected: false,
+                selectedTileColor: Colors.indigo[50],
+                onLongPress:(){
+                  (moedasSelecionadas.contains(tabela[moeda]))?
+                    moedasSelecionadas.remove(tabela[moeda])
+                    : moedasSelecionadas.add(tabela[moeda]);
+                },
               );
             },
             padding: EdgeInsets.all(16),
